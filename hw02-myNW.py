@@ -1,3 +1,6 @@
+
+# Needleman-Wunsch 算法
+
 import numpy as np
 
 a_n = {'A': 0, 'R': 1, 'N': 2, 'D': 3, 'C': 4, 'Q': 5, 'E': 6, 'G': 7, 'H': 8, 'I': 9, 'L': 10,
@@ -91,7 +94,7 @@ def dynamic_edit(str1, str2):
     len_str1 = len(str1) + 1
     len_str2 = len(str2) + 1
     newstr1 = newstr2 = ''
-    matrix = np.zeros([len_str1, len_str2])
+    matrix = np.zeros([len_str2, len_str1])
     matrix[0] = np.arange(0, gap_penalty * len_str1, gap_penalty)
     matrix[:, 0] = np.arange(0, gap_penalty * len_str2, gap_penalty)
 
@@ -105,18 +108,18 @@ def dynamic_edit(str1, str2):
             matrix[j, i] = max(a, b, c)
     print(matrix)
 
-    m = len_str1 - 1
-    n = len_str2 - 1
+    m = len_str2 - 1
+    n = len_str1 - 1
     while m != 0 or n != 0:
         t1 = a_n[str1[n - 1]]
         t2 = a_n[str2[m - 1]]
         if matrix[m, n] == matrix[m, n - 1] + gap_penalty:
-            newstr1 = str1[m - 1].__add__(newstr1)
+            newstr1 = str1[n - 1].__add__(newstr1)
             newstr2 = '*'.__add__(newstr2)
             n = n - 1
         elif matrix[m, n] == matrix[m - 1, n] + gap_penalty:
             newstr1 = '*'.__add__(newstr1)
-            newstr2 = str2[n - 1].__add__(newstr2)
+            newstr2 = str2[m - 1].__add__(newstr2)
             m = m - 1
         elif matrix[m, n] == matrix[m - 1, n - 1] + blosum[t1, t2]:
             newstr1 = str1[n - 1].__add__(newstr1)
@@ -128,8 +131,12 @@ def dynamic_edit(str1, str2):
 
 
 def main():
-    str1 = 'IPGAWD'
-    str2 = 'VGAWAD'
+    # str1 = 'IPGAWD'
+    # str2 = 'VGAWAD'
+
+    str1 = 'MSRQFTCKSGASNRGFSGCSAVLSGGSSSSYRAGGKGLSGGFGSRSLYSLGGGRSITLNMASGSGKNGGFGFGRNRASGFAGSIFGSVALGPVCPAVCPPGGIHQVTVNESLLAPLNVELDPEIQKVRAQEREQIKALNNKFASFIDKVRFLEQQNQVLQTKWELLQQLDLNNCKNNLEPILEGHISNMRKQLETLSGDRVRLDSELRNVRDVVEDYKKKYEEEINRRTAAENEFVLLKKDVDAAYANKVELQAKVDTMDQDIKFFKCLFEAEMAQIQSHISDMSVILSMDNNRNLDLDSIIDEVRAQYEEIALKSKAEAEALYQTKFQELQLAAGRHGDDLKNTKNEITELTRFIQRLRSEIENAKKQASNLETAIADAEQRGDSALKDARAKLDELEGALHQAKEELARMLREYQELMSLKLALDMEIATYRKLLESEECRMSGEYSSPVSISIISSTSGSGGYGFRPSTVSGGYVANSTSCISGVCSVRGGENRSRGSASDYKDTLTKGSSLSTPSKKGGR'
+    str2 = 'MSRQFTCKSGAAAKGGFSGCSAVLSGGSSSSFRAGSKGLSGGFGSRSLYSLGGVRSLNVASGSGKSGGYGFGRGRASGFAGSMFGSVALGPVCPTVCPPGGIHQVTVNESLLAPLNVELDPEIQKVRAQEREQIKALNNKFASFIDKVRFLEQQNQVLETKWELLQQLDLNNCKNNLEPILEGYISNLRKQLETLSGDRVRLDSELRNVRDVVEDYKKRYEEEINKRTAAENEFVLLKKDVDAAYANKVELQAKVESMDQEIKFFRCLFEAEITQIQSHISDMSVILSMDNNRNLDLDSIIDEVRTQYEEIALKSKAEAEALYQTKFQELQLAAGRHGDDLKNTKNEISELTRLIQRIRSEIENVKKQASNLETAIADAEQRGDNALKDARAKLDELEGALHQAKEELARMLREYQELMSLKLALDMEIATYRKLLESEECRMSGEFPSPVSISIISSTSGGSVYGFRPSMVSGGYVANSSNCISGVCSVRGGEGRSRGSANDYKDTLGKGSSLSAPSKKTSRA'
+
     dynamic_edit(str1, str2)
 
 
