@@ -19,8 +19,8 @@ with open(filename + '.pdb', 'r', encoding='utf-8') as fr:
                     seq = seq + aa3_1[col[3]]
 
                     if not col[4][0] == lastL:  # 检测亚基是否改变，亚基变化，开新seq
-                        fw.write(seq + '\n' + '> ' + filename + ' | Chain ' + col[4][0] + ' |\n')
-                        seq = ''
+                        fw.write(seq[:-1] + '\n' + '> ' + filename + ' | Chain ' + col[4][0] + ' |\n')
+                        seq = aa3_1[col[3]]
                         changeM = 0  # 编号从新计数了
 
                 lastL = col[4][0]  # 当编号大于999时，会出现如 A1002 这种问题
