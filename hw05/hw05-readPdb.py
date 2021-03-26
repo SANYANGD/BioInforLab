@@ -3,7 +3,8 @@ aa3_1 = {'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E', 'PHE': 'F',
          'MET': 'M', 'ASN': 'N', 'PRO': 'P', 'GLN': 'Q', 'ARG': 'R',
          'SER': 'S', 'THR': 'T', 'VAL': 'V', 'TYR': 'Y', 'TRP': 'W'}
 
-filename = '6xre'
+# filename = '4a61'
+filename = input('请输入PDB序号：')
 seq = ''
 lastL = 'A'
 lastN = 0
@@ -26,7 +27,7 @@ with open(filename + '.pdb', 'r', encoding='utf-8') as fr:
 
                 if changeM == 0:
                     lastN = col[5]
-                    if int(col[5]) == 999:
+                    if int(col[5]) >= 999:
                         changeM = 1  # 此时编号出现如 A1002 这种问题，换方法提区编号
                 elif changeM == 1:
                     lastN = col[4][1:]
