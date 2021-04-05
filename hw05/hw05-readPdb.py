@@ -3,7 +3,7 @@ aa3_1 = {'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E', 'PHE': 'F',
          'MET': 'M', 'ASN': 'N', 'PRO': 'P', 'GLN': 'Q', 'ARG': 'R',
          'SER': 'S', 'THR': 'T', 'VAL': 'V', 'TYR': 'Y', 'TRP': 'W'}
 
-# filename = '4a61'
+# filename = '6xre'
 filename = input('请输入PDB序号：')
 seq = ''
 lastL = 'A'
@@ -15,7 +15,13 @@ with open(filename + '.pdb', 'r', encoding='utf-8') as fr:
         for line in fr:
             if line[0:4] == 'ATOM':
                 col = line.split()
-                if not col[5] == lastN:  # 检测编号是否改变
+
+                if changeM == 0:
+                    preN = col[5]
+                elif changeM == 1:
+                    preN = col[4][1:]
+
+                if not preN == lastN:  # 检测编号是否改变
                     seq = seq + aa3_1[col[3]]
 
                     if not col[4][0] == lastL:  # 检测亚基是否改变，亚基变化，开新seq
