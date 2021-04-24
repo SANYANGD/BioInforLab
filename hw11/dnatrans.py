@@ -2,17 +2,21 @@ import re
 import tkinter as tk
 import numpy as np
 
+# 输入窗体
 window = tk.Tk()  # 建立窗口window
 window.title('DNA/RAN Translate')  # 窗口名称
 
+# 碱基配对表
 na = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
 
+# 氨基酸单字母-三字母对应表
 aa1to3 = {'A': 'ALA', 'C': 'CYS', 'D': 'ASP', 'E': 'GLU', 'F': 'PHE',
           'G': 'GLY', 'H': 'HIS', 'K': 'LYS', 'I': 'ILE', 'L': 'LEU',
           'M': 'MET', 'N': 'ASN', 'P': 'PRO', 'Q': 'GLN', 'R': 'ARG',
           'S': 'SER', 'T': 'THR', 'V': 'VAL', 'Y': 'TYR', 'W': 'TRP', '*': 'Ter'}
 
 # https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=tgencodes#SG1
+# 根据网站得到的多种transl_table
 transl_table_1 = {'TTT': 'F', 'TCT': 'S', 'TAT': 'Y', 'TGT': 'C',
                   'TTC': 'F', 'TCC': 'S', 'TAC': 'Y', 'TGC': 'C',
                   'TTA': 'L', 'TCA': 'S', 'TAA': '*', 'TGA': '*',
@@ -259,6 +263,7 @@ transl_table = [transl_table_1, transl_table_2, transl_table_3, transl_table_4, 
 #     return dna
 
 
+# 结果输出
 def format_output(result):
     print('\nResults of translation (Ranked by recommendation):')
     print('%-10s %-s' % ('score', 'aa'))
@@ -274,10 +279,6 @@ def tran(dna, transl_table):
             if len(dna) - 3 * i > 2 + j:
                 tran_aa[j] += (transl_table[dna[i * 3 + j:i * 3 + 3 + j]])
     return tran_aa
-
-
-def cal_score(num, if_orf):
-    return np.dot(np.array(num), np.array(if_orf))
 
 
 # 计算得到的AA序列结构
@@ -313,6 +314,12 @@ def num_tran_aa(tran_aa):
     return score
 
 
+# 推荐算法
+def cal_score(num, if_orf):
+    return np.dot(np.array(num), np.array(if_orf))
+
+
+# 推荐函数
 def recommend(aas):
     r = {}
     for aa in aas:
@@ -320,16 +327,6 @@ def recommend(aas):
         r.update({aa: tempscore})
     r_s = sorted(r.items(), key=lambda x: x[1], reverse=True)
     return r_s
-
-
-def choose_transl_table(c):
-    window = tk.Tk()  # 建立窗口window
-    window.title('DNA/RAN Translate')  # 窗口名称
-
-    button = tk.Button(window, text="Print Me", command=format_output)
-    button.pack()
-
-    window.mainloop()
 
 
 def main():
@@ -340,12 +337,13 @@ def main():
     dna = re.sub('[^ATGC]', '', dna)
     # dna = format_input()
     dna_t = dna[::-1].translate(str.maketrans(na))
+    # print(dna)
 
     print('transl_table_1  Standard \n'
           'transl_table_2  Vertebrate mitochondrial \n'
           'transl_table_3  Yeast mitochondrial \n'
           'transl_table_4  Mold, protozoan and coelenterate mitochondrial, mycoplasma \n'
-          'transl_table_5  Ispiroplasmalnvertebrate mitochondrial \n'
+          'transl_table_5  lnvertebrate mitochondrial \n'
           'transl_table_6  Ciliate, dasycladacean and hexamita nuclear \n'
           'transl_table_7  Echinoderm and flatworm mitochondrial \n'
           'transl_table_8  Euplotid nuclear \n'
@@ -359,15 +357,19 @@ def main():
     c = int(input())
     tran_aa_5to3 = tran(dna, transl_table[c - 1])
     tran_aa_3to5 = tran(dna_t, transl_table[c - 1])
+    # for i in tran_aa_5to3 + tran_aa_3to5:
+    #     print(i)
 
     result = recommend(tran_aa_5to3 + tran_aa_3to5)
     format_output(result)
 
 
 if __name__ == '__main__':
+    w = tk.Label(window, text='Please enter a protokaryotic DNA/RNA sequence'
+                              ' - numbers and blanks are ignored:')
+    w.pack()
     textExample = tk.Text(window, height=10)  # 文本输入框
     textExample.pack()  # 把Text放在window上面，显示Text这个控件
-    textExample.insert(0.0, 'Please enter a protokaryotic DNA/RNA sequence - numbers and blanks are ignored:\n')
 
     # 按钮（#command绑定获取文本框内容的方法）
     btnRead = tk.Button(window, height=1, width=10, text='Translate', command=main)
